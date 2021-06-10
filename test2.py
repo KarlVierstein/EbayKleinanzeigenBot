@@ -5,6 +5,7 @@ import itertools
 import math
 import time
 import random
+import urllib
 
 url = "https://www.ebay-kleinanzeigen.de/s-suchanfrage.html"
 page_num = 1

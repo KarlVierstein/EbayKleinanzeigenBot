@@ -68,13 +68,14 @@ class EbayKleinanzeigenScraper:
             'Accept-Language': 'de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7',
             # 'Connection': 'close',
         }
+        self.kill_switch = False
 
     def get_first_page(self):
         content = requests.get(self.url + "/s-suchanfrage.html", headers=self.headers, params=self.parameters).content
         parser = html.fromstring(content)
         ads = []
         page_content = parser.xpath('//*[@id="srchrslt-adtable"]/li/article')
-        max_ads = parser.xpath('//*[@id="srchrslt-content"]/div[3]/div[1]/div[1]/div[1]/span/strong[1]/text()')
+        max_ads = int(parser.xpath('//*[@id="srchrslt-content"]/div[3]/div[1]/div[1]/div[1]/span/strong[1]/text()')[0])
         if max_ads == None or max_ads < 28:
             max_ads = 0
         else:
@@ -93,6 +94,7 @@ class EbayKleinanzeigenScraper:
                 elif selling_date[0:7] == "Gestern":
                     selling_date = selling_date[:0] + self.get_date_tmrw() + selling_date[7:]
                 url = "https://ebay-kleinanzeigen.de" + element.xpath('@data-href')[0]
+                print(url)
                 thumbnail = element.xpath('div[1]/a/div/@data-imgsrc')
                 if len(thumbnail) == 0:
                     thumbnail.append("https://www.happypostcards.de/img/p/de-default-big_default.jpg")
@@ -176,10 +178,30 @@ class EbayKleinanzeigenScraper:
     def long_pause(self):
         pass
 
+
+    def get_max_pages(self, max_elements):
+        return math.ceil(max_elements / 27)
+
+    def get_date(self):
+        return str(datetime.now(pytz.timezone('Europe/Berlin')).strftime('%d.%m.%Y'))
+
+    def get_date_tmrw(self):
+        return str((datetime.utcnow().date() - timedelta(days=1)).strftime('%d.%m.%Y'))
+
+    def get_ad_type(self):
+        return self.ad_type
+
+    def get_kill_switch(self):
+        return self.kill_switch
+
+
+
+
+"""
     def check_newest_ad(self):
         newest_ad = Advertisement(url=None, title=None, date=None, location=None, delivery=None,condition=None, price=None, thumbnail=None)
 
-        while True:
+        while not self.get_kill_switch():
             content = requests.get(self.url + self.get_url_tribe(), headers=self.headers).content
             parser = html.fromstring(content)
             cur_ad = parser.xpath('//*[@id="srchrslt-adtable"]/li/article')[0]
@@ -190,6 +212,7 @@ class EbayKleinanzeigenScraper:
                 cur_thumbnail = "https://www.happypostcards.de/img/p/de-default-big_default.jpg"
             else:
                 cur_thumbnail = cur_ad.xpath('div[1]/a/div/@data-imgsrc')[0]
+
             if cur_selling_date[0:5] == "Heute":
                 cur_selling_date = cur_selling_date[:0] + self.get_date() + cur_selling_date[5:]
             elif cur_selling_date[0:7] == "Gestern":
@@ -204,26 +227,4 @@ class EbayKleinanzeigenScraper:
                 newest_ad = cur_ad_obj
 
             time.sleep(random.uniform(45.0, 60.0))
-
-    def get_max_pages(self, max_elements):
-        return math.ceil(max_elements / 27)
-
-    def get_date(self):
-        return str(datetime.now(pytz.timezone('Europe/Berlin')).strftime('%d.%m.%Y'))
-
-    def get_date_tmrw(self):
-        return str((datetime.utcnow().date() - timedelta(days=1)).strftime('%d.%m.%Y'))
-
-    def get_ad_type(self):
-        return self.ad_type
-
-bot = EbayKleinanzeigenScraper("Manga", anzeige="OFFER")
-items, max_ads = bot.get_first_page()
-items2 = bot.get_other_pages(bot.get_max_pages(max_ads), 2)
-
-ads = items + items2
-for item in ads:
-    print(item.price + " " + item.url)
-
-print(len(ads))
-
+"""

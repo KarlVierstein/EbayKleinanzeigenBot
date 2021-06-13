@@ -13,4 +13,14 @@ class Advertisement:
 
 
 
+class EmptyAdClass:
 
+    def __init__(self):
+        self.url = ""
+        self.title = ""
+        self.price = ""
+        self.date = ""
+        self.location = ""
+        self.delivery = ""
+        self.condition = ""
+        self.thumbnail = ""

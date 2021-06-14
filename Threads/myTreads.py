@@ -21,14 +21,20 @@ class getCurAdThread(threading.Thread):
         self.threadID = threadID
         self.name = name
         self.bot = bot
+        self._return = None
 
     def run(self):
         print("Starting " + self.name)
         time.sleep(10)
         print(self.bot.newest_ad.url)
         print(self.bot.newest_ad.date)
+        print(self.bot.newest_ad.thumbnail)
+        self._return = self.bot.newest_ad
         print("Exiting " + self.name)
 
+    def join(self, *args):
+        threading.Thread.join(self, *args)
+        return self._return
 
 class getAds(threading.Thread):
     def __init__(self, threadID, name, bot):

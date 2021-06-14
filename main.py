@@ -1,6 +1,6 @@
 from EbayKleinanzeigenScraper.EbayKleinanzeigenScraper import EbayKleinanzeigenScraper
-from EbayKleinanzeigenScraper.NewestAd import NewestAd
-
+from EbayKleinanzeigenScraper.AdListener import AdListener
+from Threads.myTreads import getCurAdThread, myListenerThread, getAds
 """
 bot = EbayKleinanzeigenScraper("iPhone")
 items, max_ads = bot.get_first_page()
@@ -12,11 +12,16 @@ for item in ads:
 
 print(len(ads))
 """
-bot = NewestAd("iPhone")
-latest_ad = bot.check_newest_ad()
-print(latest_ad.url)
-print(latest_ad.thumbnail)
-print(latest_ad.date)
-print(latest_ad.location)
-bot.set_kill_switch(True)
+bot1 = AdListener("iPhone")
+bot2 = EbayKleinanzeigenScraper("iPhone", region="Berlin")
 #"""
+thread1 = myListenerThread(1, "Thread-1", bot1)
+thread2 = getCurAdThread(2, "Thread-2", bot1)
+thread3 = getAds(2, "Thread-3", bot2)
+
+# Start new Threads
+thread1.start()
+thread2.start()
+#thread3.start()
+
+#print(thread3.join())

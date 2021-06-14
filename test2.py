@@ -1,18 +1,37 @@
-import requests
+import threading
+import time
 
-url_login = "https://www.ebay-kleinanzeigen.de:443/m-einloggen.html"
-
-
-headers = {
-    'Host': 'www.ebay-kleinanzeigen.de',
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0) Gecko/20100101 Firefox/89.0'
-}
-
-with requests.Session() as s:
-    main_page_res = s.get('https://www.ebay-kleinanzeigen.de/', headers=headers)
-    print(main_page_res.status_code)
+exitFlag = 0
 
 
-    login_res = s.post(url_login, headers=headers)
-    print(login_res.status_code)
-    print(login_res.content)
+class myThread(threading.Thread):
+    def __init__(self, threadID, name, counter):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+
+    def run(self):
+        print("Starting " + self.name)
+        print_time(self.name, 5, self.counter)
+        print("Exiting " + self.name)
+
+
+def print_time(threadName, counter, delay):
+    while counter:
+        if exitFlag:
+            threadName.exit()
+        time.sleep(delay)
+        print("%s: %s" % (threadName, time.ctime(time.time())))
+        counter -= 1
+
+
+# Create new threads
+thread1 = myThread(1, "Thread-1", 1)
+thread2 = myThread(2, "Thread-2", 2)
+
+# Start new Threads
+thread1.start()
+thread2.start()
+
+print("Exiting Main Thread")

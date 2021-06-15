@@ -1,6 +1,9 @@
 from EbayKleinanzeigenScraper.EbayKleinanzeigenScraper import EbayKleinanzeigenScraper
 from EbayKleinanzeigenScraper.AdListener import AdListener
-from Threads.myTreads import getCurAdThread, myListenerThread, getAds
+from Threads.myTreads import myListenerThread, getAds
+from PriceCalc.Method1 import CalculateMethod
+from utils import clean_prices
+
 """
 bot = EbayKleinanzeigenScraper("iPhone")
 items, max_ads = bot.get_first_page()
@@ -12,16 +15,25 @@ for item in ads:
 
 print(len(ads))
 """
-bot1 = AdListener("iPhone")
-bot2 = EbayKleinanzeigenScraper("iPhone", region="Berlin")
-#"""
+bot1 = AdListener("iPhone 12 Pro", region="Berlin", min_price="200")
+bot2 = EbayKleinanzeigenScraper("iPhone 12 Pro", region="Berlin", min_price="200")
+
 thread1 = myListenerThread(1, "Thread-1", bot1)
-thread2 = getCurAdThread(2, "Thread-2", bot1)
-thread3 = getAds(2, "Thread-3", bot2)
+thread2 = getAds(2, "Thread-2", bot2)
 
 # Start new Threads
 thread1.start()
 thread2.start()
-#thread3.start()
 
-#print(thread3.join())
+latest_ad = thread1.return_element()
+items = thread2.return_element()
+
+prices = clean_prices.filter_prices(items)
+opt_price = CalculateMethod.calc_optimum_price(prices)
+print(opt_price)
+print(latest_ad.date)
+# print(len(price_elements))
+"""
+bot = AdListener("iPhone", region="Berlin", min_price="200")
+latest_ad = bot.listen_on_ad()
+"""

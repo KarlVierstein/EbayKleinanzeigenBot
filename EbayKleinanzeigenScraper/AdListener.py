@@ -21,7 +21,6 @@ class AdListener(EbayKleinanzeigenScraper):
 
 
     def listen_on_ad(self):
-
         response = requests.get(self.url + "/s-suchanfrage.html", headers=self.headers, params=self.parameters)
         content = response.content
         parser = html.fromstring(content)

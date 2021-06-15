@@ -25,24 +25,28 @@ def get_new_list(cur_list):
             cur_list.remove(price)
     return cur_list
 
+def same_average(given_list, last_average, same_average_counter):
+    if last_average == get_average(given_list):
+        return same_average_counter + 1
+    else:
+        return 0
 
-def check_only_duplicates(given_list, last_average):
+def check_only_duplicates(given_list, same_average_counter):
     checking_set = set()
+
     for element in given_list:
         checking_set.add(element)
-    if len(checking_set) == 1 or last_average == get_average(given_list):
+    if len(checking_set) == 1 or same_average_counter == 10:
         return True
     else:
         return False
 
-
-new_bar = get_new_list(bar)
-average = 0
-check = False
-
-while not check_only_duplicates(new_bar, average):
-    average = get_average(new_bar)
-    new_bar = get_new_list(new_bar)
-    print(len(new_bar))
-    print(new_bar)
-print("Optimalpreis ist: " + str(math.ceil(get_average(new_bar))))
+def calc_optimum_price(given_list):
+    average = 0
+    same_average_counter = 0
+    while not check_only_duplicates(given_list, same_average_counter):
+        average = get_average(given_list)
+        same_average_counter = same_average(given_list, average, same_average_counter)
+        given_list = get_new_list(given_list)
+    print("Optimalpreis ist: " + str(math.ceil(get_average(given_list))))
+    return math.ceil(get_average(given_list))

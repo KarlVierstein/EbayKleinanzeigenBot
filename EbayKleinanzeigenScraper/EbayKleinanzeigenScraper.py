@@ -6,6 +6,8 @@ import time
 import math
 from datetime import datetime, timedelta
 from advertisement import Advertisement
+from utils.date import get_date, get_date_tmrw
+from EbayKleinanzeigenScraper.ExtractAd import exctract_from_ad
 
 from lxml.etree import tostring
 
@@ -86,22 +88,8 @@ class EbayKleinanzeigenScraper:
 
             for i in range(len(page_content)):
                 element = page_content[i]
-                title = element.xpath('div[2]/div[2]/h2/a/text()')[0]
-                selling_location = element.xpath('div[2]/div[1]/div[1]/text()')
-                selling_date = str(element.xpath('div[2]/div[1]/div[2]/text()')[1].strip())
-                if selling_date[0:5] == "Heute":
-                    selling_date = selling_date[:0] + self.get_date() + selling_date[5:]
-                elif selling_date[0:7] == "Gestern":
-                    selling_date = selling_date[:0] + self.get_date_tmrw() + selling_date[7:]
-                url = "https://ebay-kleinanzeigen.de" + element.xpath('@data-href')[0]
-                print(url)
-                thumbnail = element.xpath('div[1]/a/div/@data-imgsrc')
-                if len(thumbnail) == 0:
-                    thumbnail.append("https://www.happypostcards.de/img/p/de-default-big_default.jpg")
 
-                price = element.xpath('div[2]/div[2]/p[2]/text()')[0].strip()
-                ad = Advertisement(url=url, title=title, date=selling_date, location=selling_location, delivery=None,
-                                   condition=None, price=price, thumbnail=thumbnail[0])
+                ad = exctract_from_ad(element)
 
                 ads.append(ad)
 
@@ -118,23 +106,10 @@ class EbayKleinanzeigenScraper:
             for j in range(len(page_content)):
                 element = page_content[j]
 
-                title = element.xpath('div[2]/div[2]/h2/a/text()')[0]
-                selling_location = element.xpath('div[2]/div[1]/div[1]/text()')
-                selling_date = str(element.xpath('div[2]/div[1]/div[2]/text()')[1].strip())
-                thumbnail = element.xpath('div[1]/a/div/@data-imgsrc')
-                if len(thumbnail) == 0:
-                    thumbnail.append("https://www.happypostcards.de/img/p/de-default-big_default.jpg")
-                if selling_date[0:5] == "Heute":
-                    selling_date = selling_date[:0] + self.get_date() + selling_date[5:]
-                elif selling_date[0:7] == "Gestern":
-                    selling_date = selling_date[:0] + self.get_date_tmrw() + selling_date[7:]
-                url = "https://ebay-kleinanzeigen.de" + element.xpath('@data-href')[0]
-                price = element.xpath('div[2]/div[2]/p[2]/text()')[0].strip()
-                ad = Advertisement(url=url, title=title, date=selling_date, location=selling_location, delivery=None,
-                                   condition=None, price=price, thumbnail=thumbnail[0])
+                ad = exctract_from_ad(element)
 
                 ads_other_sites.append(ad)
-        self.short_pause()
+            self.short_pause()
         return ads_other_sites
 
     def set_url_tribe(self, parser=None, new_text=None):
@@ -172,8 +147,7 @@ class EbayKleinanzeigenScraper:
         self.url = new_url
 
     def short_pause(self):
-        print(random.uniform(0.1, 2.0))
-        time.sleep(random.uniform(0.1, 2.0))
+        time.sleep(random.uniform(0.5, 2.0))
 
     def long_pause(self):
         pass

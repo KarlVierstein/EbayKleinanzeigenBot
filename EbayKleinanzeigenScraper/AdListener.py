@@ -5,6 +5,8 @@ from EbayKleinanzeigenScraper.EbayKleinanzeigenScraper import EbayKleinanzeigenS
 from advertisement import Advertisement, EmptyAdClass
 import random
 import time
+from EbayKleinanzeigenScraper.ExtractAd import exctract_from_ad
+
 
 
 class AdListener(EbayKleinanzeigenScraper):
@@ -27,29 +29,8 @@ class AdListener(EbayKleinanzeigenScraper):
         cur_ad = self.get_first_ad(page_ads)
         if cur_ad == False:
             return EmptyAdClass()
-        cur_title = cur_ad.xpath('div[2]/div[2]/h2/a/text()')[0]
-        cur_selling_location = cur_ad.xpath('div[2]/div[1]/div[1]/text()')[1].strip()
-        # print(cur_selling_location)
-        cur_selling_date = str(cur_ad.xpath('div[2]/div[1]/div[2]/text()')[1].strip())
-        # print(cur_selling_date)
-        if cur_ad.xpath('div[1]/a/div/@class') == "imagebox srpimagebox is-nopic":
-            cur_thumbnail = "https://www.happypostcards.de/img/p/de-default-big_default.jpg"
-        else:
-            cur_thumbnail = cur_ad.xpath('div[1]/a/div/@data-imgsrc')[0]
 
-        if cur_selling_date[0:5] == "Heute":
-            cur_selling_date = cur_selling_date[:0] + self.get_date() + cur_selling_date[5:]
-        elif cur_selling_date[0:7] == "Gestern":
-            cur_selling_date = cur_selling_date[:0] + self.get_date_tmrw() + cur_selling_date[7:]
-        cur_url = "https://ebay-kleinanzeigen.de" + cur_ad.xpath('@data-href')[0]
-        # print(tostring(element))
-        cur_price = cur_ad.xpath('div[2]/div[2]/p[2]/text()')[0].strip()
-
-        # time.sleep(random.uniform(45.0, 60.0))
-
-        cur_ad = Advertisement(url=cur_url, title=cur_title, date=cur_selling_date,
-                             location=cur_selling_location, delivery=None, condition=None,
-                             price=cur_price, thumbnail=cur_thumbnail)
+        cur_ad = exctract_from_ad(cur_ad)
 
         self.set_var_newest_ad(cur_ad)
 

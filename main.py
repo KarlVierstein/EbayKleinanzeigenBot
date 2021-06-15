@@ -37,3 +37,6 @@ print(latest_ad.date)
 bot = AdListener("iPhone", region="Berlin", min_price="200")
 latest_ad = bot.listen_on_ad()
 """
+
+
+# https://github.com/karlvierstein/ebaykleinanzeigenbot.git

@@ -1,10 +1,7 @@
 from lxml import html
 import requests
-from lxml.etree import tostring
 from EbayKleinanzeigenScraper.EbayKleinanzeigenScraper import EbayKleinanzeigenScraper
-from advertisement import Advertisement, EmptyAdClass
-import random
-import time
+from utils.advertisement import Advertisement, EmptyAdClass
 from EbayKleinanzeigenScraper.ExtractAd import exctract_from_ad
 
 

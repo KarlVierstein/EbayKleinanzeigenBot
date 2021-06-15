@@ -5,11 +5,7 @@ import random
 import time
 import math
 from datetime import datetime, timedelta
-from advertisement import Advertisement
-from utils.date import get_date, get_date_tmrw
 from EbayKleinanzeigenScraper.ExtractAd import exctract_from_ad
-
-from lxml.etree import tostring
 
 
 class EbayKleinanzeigenScraper:

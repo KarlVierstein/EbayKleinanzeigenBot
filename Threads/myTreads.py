@@ -1,6 +1,5 @@
 import threading
-import time
-from advertisement import EmptyAdClass
+from utils.advertisement import EmptyAdClass
 
 
 class myListenerThread(threading.Thread):

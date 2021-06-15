@@ -1,6 +1,5 @@
-from lxml import html
 from utils.date import get_date, get_date_tmrw
-from advertisement import Advertisement
+from utils.advertisement import Advertisement
 
 def exctract_from_ad(element_parser, listener=False):
     title = element_parser.xpath('div[2]/div[2]/h2/a/text()')[0]
